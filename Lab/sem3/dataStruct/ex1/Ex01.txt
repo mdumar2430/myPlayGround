@@ -1,0 +1,909 @@
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex1$ cat ArrayHead.h
+#include<string>
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+
+class College
+{
+    private:
+        string name;
+        string city;
+        string acc;
+        int noOfStud;
+        int noOfFac;
+    public:
+        College();
+        College(string,string,string,int,int);
+        College(const College &);
+        ~College();
+        void setName(string);
+        string getName();
+        void setCity(string);
+        string getCity();
+        void setAcc(string);
+        string getAcc();
+        void setNoOfStud(int);
+        int getNoOfStud();
+        void setNoOfFac(int);
+        int getNoOfFac();
+        friend istream & operator >>(istream& ,College&);
+        friend ostream & operator <<(ostream& ,College&);
+};
+
+class A_List
+{
+    private:
+        College *arr;
+        int size;
+        int cap;
+    public:
+        A_List();
+        A_List(College *,int,int);
+        A_List(const A_List &);
+        ~A_List();
+        College* getArr();
+        int isEmpty();
+        int isFull();
+        College* displayList();
+        int insertAtFirst(College );
+        int insertAtLast(College );
+        int insertByPos(College ,int);
+        int deleteAtFirst();
+        int deleteAtLast();
+        int deleteByPos(int);
+        College searchByPos(int);
+        int makeListEmpty();
+};
+
+mdumar@MdUmar:/mnt/d/Lab/sem3/dataStruct/ex1$ cat ArrayImp.cpp
+#include"ArrayHead.h"
+
+College::College()
+{
+    name="";
+    city="";
+    acc="";
+    noOfStud=0;
+    noOfFac=0;
+}
+College::College(string name,string city,string acc,int noOfStud,int noOfFac)
+{
+    this->name=name;
+    this->city=city;
+    this->acc=acc;
+    this->noOfStud=noOfStud;
+    this->noOfFac=noOfFac;
+}
+College::College(const College &ref)
+{
+    name=ref.name;
+    city=ref.city;
+    acc=ref.acc;
+    noOfFac=ref.noOfFac;
+    noOfStud=ref.noOfStud;
+}
+College::~College()
+{
+}
+void College::setName(string x)
+{
+    name=x;
+}
+void College::setCity(string x)
+{
+    city=x;
+}
+void College::setAcc(string x)
+{
+    acc=x;
+}
+void College::setNoOfStud(int x)
+{
+    noOfStud=x;
+}
+void College::setNoOfFac(int x)
+{
+    noOfFac=x;
+}
+string College::getName()
+{
+    return name;
+}
+string College::getCity()
+{
+    return city;
+}
+string College::getAcc()
+{
+    return acc;
+}
+int College::getNoOfStud()
+{
+    return noOfStud;
+}
+int College::getNoOfFac()
+{
+    return noOfFac;
+}
+
+istream & operator >>(istream& myin ,College& C)
+{
+    cout<<"\nEnter the name of the College:";
+    myin>>C.name;
+    C.setName(C.name);
+    cout<<"\nEnter the city name:";
+    myin>>C.city;
+    C.setCity(C.city);
+    cout<<"\nEnter Accreditations of the college:";
+    myin>>C.acc;
+    C.setAcc(C.acc);
+    cout<<"\nEnter no. of students studying:";
+    myin>>C.noOfStud;
+    C.setNoOfStud(C.noOfStud);
+    cout<<"\nEnter no. of faculty working:";
+    myin>>C.noOfFac;
+    C.setNoOfFac(C.noOfFac);
+    return myin;
+}
+ostream & operator <<(ostream& myout ,College& C)
+{
+    myout<<"\n\nName:"<<C.getName();
+    myout<<"\nCity:"<<C.getCity();
+    myout<<"\nAccreditations:"<<C.getAcc();
+    myout<<"\nNo. of Students:"<<C.getNoOfStud();
+    myout<<"\nNo. of Faculty:"<<C.getNoOfFac();
+    return myout;
+}
+
+A_List::A_List()
+{
+    cap=5;
+    size=0;
+    arr=new College[cap];
+    for(int i=0;i<cap;i++)
+        arr[i]=College();
+}
+
+A_List::A_List(College *a,int s,int c)
+{
+    cap=c;
+    size=s;
+    arr=new College[cap];
+    for(int i=0;i<size;i++)
+        arr[i]=a[i];
+    for(int i=size;i<cap;i++)
+        arr[i]=College();
+}
+
+A_List::A_List(const A_List &ref)
+{
+    cap=ref.cap;
+    size=ref.size;
+    arr=new College[cap];
+    for(int i=0;i<cap;i++)
+            arr[i]=ref.arr[i];
+}
+College* A_List::getArr()
+{
+    return arr;
+}
+
+A_List::~A_List()
+{
+    delete []arr;
+    arr=NULL;
+}
+int A_List::isFull()
+{
+    if(size==cap)
+        return 1;
+    else 
+        return 0;
+}
+int A_List::isEmpty()
+{
+    if(size==0)
+        return 1;
+    else 
+        return 0;
+}
+int A_List::insertAtFirst(College ins)
+{
+    if(!isFull())
+    {
+        if(isEmpty())
+        {
+            arr[size++]=ins;
+        }
+        else
+        {
+            int i;
+            for(i=size;i>0;i--)
+                arr[i]=arr[i-1];
+            arr[i]=ins;
+            size++;
+        }
+        return 1;
+    }
+    else 
+        return 0;
+}
+College* A_List::displayList()
+{
+    College *temp=new College[10];
+    if(!isEmpty())
+        return arr;
+    else
+        return temp;
+}
+int A_List::insertAtLast(College ins)
+{
+    if(!isFull())
+    {
+	cout<<"\nChecking";
+        arr[size++]=ins;
+        return 1;
+    }
+    else
+        return 0;
+}
+int A_List::insertByPos(College ins,int pos)
+{
+    if(!isFull())
+    {
+        if((isEmpty())&&(pos==1))
+        {
+            insertAtFirst(ins);
+	    return 1;
+        }
+        else if(pos==size+1)
+        {
+	    cout<<"\nChecking";
+            insertAtLast(ins);
+	    return 1;
+        }
+        else
+        {
+            int i;
+            for(i=size;i>=pos;i--)
+                arr[i]=arr[i-1];
+            arr[pos-1]=ins;
+            size++;
+            return 1;
+        }
+    }
+    else
+        return 0;
+
+}
+int A_List::deleteAtFirst()
+{
+    if(!isEmpty())
+    {
+        if(size==1)
+        {
+            arr[0]=College();
+            size--;
+            return 1;
+        }
+        else
+        {
+            int i;
+            for(i=0;i<size-1;i++)
+                arr[i]=arr[i+1];
+            arr[i]=College();
+            size--;
+            return 1;
+        }
+    }
+    else
+        return 0;
+}
+int A_List::deleteAtLast()
+{
+    if(!isEmpty())
+    {
+        arr[size-1]=College();
+        size--;
+        return 1;
+    }
+    else
+        return 0;
+}
+int A_List::deleteByPos(int pos)
+{
+    if(!isEmpty()&&(pos<size))
+    {
+        int i;
+        for(i=pos-1;i<size-1;i++)
+            arr[i]=arr[i+1];
+        arr[i]=College();
+        size--;
+        return 1;
+    }
+    else if(!isEmpty()&&(pos==size))
+    {
+        arr[pos-1]=College();
+        size--;
+        return 1;
+    }
+    else
+        return 0;
+}
+College A_List::searchByPos(int pos)
+{
+    if(!isEmpty()&&(pos<=size))
+        return arr[pos-1];
+    else
+        return College();
+}
+int A_List::makeListEmpty()
+{
+    if(!isEmpty())
+    {
+        size=0;
+        return 1;
+    }
+    else
+        return 0;
+}
+
+
+
+mdumar@MdUmar:/mnt/d/Lab/sem3/dataStruct/ex1$ cat ArrayApp.cpp
+#include"ArrayHead.h"
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int cap,size,ch,flag,i,pos;
+    cout<<"\nEnter Capacity of the list:";
+    cin>>cap;
+    cout<<"\nEnter no. of Colleges to be added:";
+    cin>>size;
+    College C,search;
+    College *col=new College[cap];
+    College *temp=new College[cap];
+    if(size>0)
+    {
+        cout<<"\n\t*****************************Enter College Details*****************************";
+        for(i=0;i<size;i++)
+        {
+            cin>>col[i];
+            cout<<"\n--------------------------------------";
+        }
+    }
+    A_List list(col,size,cap);
+    do
+    {
+        cout<<"\n\n----------------------->MENU<-----------------------";
+        cout<<"\n1.Insert Entry at First\n2.Insert Entry at Last\n3.Insert Entry at given position\n4.Delete First Entry\n5.Delete Last Entry\n6.Delete Entry at given position\n7.Search Element at given position\n8.Make List Empty\n9.Display List\n10.EXIT\n----------------------------------\nEnter your choice:";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1://Insert at First
+                cout<<"\n\t*****************************Enter College Detail to be inserted at first****************************";
+                cin>>C;
+                flag=list.insertAtFirst(C);
+                if(flag==1)
+                    cout<<"\nInsertion Successfull,Click 9 to see the modification";
+                else
+                    cout<<"\nInsertion Failed";
+                break;
+            case 2://Insert At Last
+                cout<<"\n\t*****************************Enter College Detail to be inserted At Last*****************************";
+                cin>>C;
+                flag=list.insertAtLast(C);
+                if(flag==1)
+                    cout<<"\nInsertion Successfull,Click 9 to see the modification";
+                else
+                    cout<<"\nInsertion Failed";
+                break;
+            case 3://insert by position
+                {
+                cout<<"\n\t*****************************Enter College Detail to be inserted*****************************";
+                cin>>C;
+                cout<<"\nEnter position:";
+                cin>>pos;
+                if(pos<=cap)
+                {
+                    flag=list.insertByPos(C,pos);
+                    if(flag==1)
+                        cout<<"\nInsertion Successfull,Click 9 to see the modification";
+                    else
+                        cout<<"\nInsertion Failed";
+                }
+                else
+                    cout<<"\nInsertion Failed";
+                }break;
+            case 4://Delete at first
+                {
+                cout<<"\nDeleting First element..................";
+                flag=list.deleteAtFirst();
+                if(flag==1)
+                    cout<<"\n\n>>>>>>>>>Deletion successful,Click 9 to see the modification";
+                else
+                    cout<<"\n\n>>>>>>>>>Deletion Failed";
+                }break;
+            case 5://Delete At Last
+                {
+                cout<<"\nDeleting Last element..................";
+                flag=list.deleteAtLast();
+                if(flag==1)
+                    cout<<"\n\n>>>>>>>>>Deletion successful,Click 9 to see the modification";
+                else
+                    cout<<"\n\n>>>>>>>>>Deletion Failed";
+                }break;
+            case 6://Delete by Position
+                {
+                cout<<"\nEnter Position:";
+                cin>>pos;
+                cout<<"\nDeleting given entry...................";
+                flag=list.deleteByPos(pos);
+                if(flag==1)
+                    cout<<"\n\n>>>>>>>>>Deletion successful,Click 9 to see the modification";
+                else
+                    cout<<"\n\n>>>>>>>>>Deletion Failed";
+                }break;
+            case 7://serach element by position
+                cout<<"\n>>>>>>>>>>>SEARCH<<<<<<<<<<<";
+                cout<<"\nEnter position to search:";
+                cin>>pos;
+                search=list.searchByPos(pos);
+                if(search.getNoOfStud()!=0)
+                {
+                    cout<<"\n>>>>>>>>>>Element Found!<<<<<<<<<<";
+                    cout<<search;
+                }
+                else
+                    cout<<"\n>>>>>>>>>Element not Found<<<<<<<<<<";
+                break;
+            case 8://Make List Empty
+                flag=list.makeListEmpty();
+                if(flag==1)
+                {
+                    cout<<"\nEmptying the List..............";
+                    cout<<"\n>>>>>>>>List is Empty<<<<<<<<";
+                }
+                else
+                    cout<<"\nList is already Empty";
+                break;
+            case 9://Display List
+                temp=list.displayList();
+                cout<<"\n\t------------------------DETAILS------------------------";
+                cout<<"\nNAME\tCITY\t\tACCREDITATION\tNo. Of Students\t\tNo. Of Faculty\n";
+                cout<<"--------------------------------------------------------------------------------|\n";
+                if(temp[0].getNoOfStud()!=0)
+                {
+                    for(i=0;temp[i].getNoOfStud()!=0;i++)
+                    {
+                            cout<<temp[i].getName()<<"\t"<<temp[i].getCity()<<"\t\t"<<temp[i].getAcc()<<"\t\t\t"<<temp[i].getNoOfStud()<<"\t\t\t\b\b"<<temp[i].getNoOfFac()<<"\n";
+                            cout<<"--------------------------------------------------------------------------------|\n";
+                    }
+                }
+                else
+                    cout<<"\nList is empty!";
+                break;
+            case 10:break;
+            default:cout<<"\n-----------------Invalid choice!-----------------";
+        }
+    }while(ch<10);
+}
+
+
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex1$ cat makefile
+out.exe:ArrayImp.o ArrayApp.o
+	g++ -o out.exe ArrayImp.o ArrayApp.o
+ArrayImp.o:ArrayImp.cpp
+	g++ -c ArrayImp.cpp
+ArrayApp.o:ArrayApp.cpp
+	g++ -c ArrayApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex1$ make
+make: 'out.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex1$ ./out.exe 
+
+Enter Capacity of the list:5
+
+Enter no. of Colleges to be added:2
+
+	*****************************Enter College Details*****************************
+Enter the name of the College:MSEC
+
+Enter the city name:tvl
+
+Enter Accreditations of the college:NAAc
+
+Enter no. of students studying:300
+
+Enter no. of faculty working:350
+
+--------------------------------------
+Enter the name of the College:NEC
+
+Enter the city name:tvl
+
+Enter Accreditations of the college:Naac
+
+Enter no. of students studying:400
+
+Enter no. of faculty working:450
+
+--------------------------------------
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:1
+
+	*****************************Enter College Detail to be inserted at first****************************
+Enter the name of the College:PSG
+
+Enter the city name:cbe
+
+Enter Accreditations of the college:NAAC
+
+Enter no. of students studying:800
+
+Enter no. of faculty working:850
+
+Insertion Successfull,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+PSG	cbe		NAAC			800			850
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:2
+
+	*****************************Enter College Detail to be inserted At Last*****************************
+Enter the name of the College:LDC
+
+Enter the city name:mdu
+
+Enter Accreditations of the college:NAAC
+
+Enter no. of students studying:700
+
+Enter no. of faculty working:750
+
+Checking
+Insertion Successfull,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+PSG	cbe		NAAC			800			850
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+LDC	mdu		NAAC			700			750
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:3
+
+	*****************************Enter College Detail to be inserted*****************************
+Enter the name of the College:PSN
+
+Enter the city name:tvl
+
+Enter Accreditations of the college:NAAC
+
+Enter no. of students studying:500
+
+Enter no. of faculty working:550
+
+Enter position:3
+
+Insertion Successfull,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+PSG	cbe		NAAC			800			850
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+PSN	tvl		NAAC			500			550
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+LDC	mdu		NAAC			700			750
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:4
+
+Deleting First element..................
+
+>>>>>>>>>Deletion successful,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+PSN	tvl		NAAC			500			550
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+LDC	mdu		NAAC			700			750
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:5
+
+Deleting Last element..................
+
+>>>>>>>>>Deletion successful,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+PSN	tvl		NAAC			500			550
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:6
+
+Enter Position:2
+
+Deleting given entry...................
+
+>>>>>>>>>Deletion successful,Click 9 to see the modification
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+MSEC	tvl		NAAc			300			350
+--------------------------------------------------------------------------------|
+NEC	tvl		Naac			400			450
+--------------------------------------------------------------------------------|
+
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:7
+
+>>>>>>>>>>>SEARCH<<<<<<<<<<<
+Enter position to search:1
+
+>>>>>>>>>>Element Found!<<<<<<<<<<
+
+Name:MSEC
+City:tvl
+Accreditations:NAAc
+No. of Students:300
+No. of Faculty:350
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:8
+
+Emptying the List..............
+>>>>>>>>List is Empty<<<<<<<<
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:9
+
+	------------------------DETAILS------------------------
+NAME	CITY		ACCREDITATION	No. Of Students		No. Of Faculty
+--------------------------------------------------------------------------------|
+
+List is empty!
+
+----------------------->MENU<-----------------------
+1.Insert Entry at First
+2.Insert Entry at Last
+3.Insert Entry at gievn position
+4.Delete First Entry
+5.Delete Last Entry
+6.Delete Entry at gievn position
+7.Search Element at given position
+8.Make List Empty
+9.Display List
+10.EXIT
+----------------------------------
+Enter your choice:10
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex1$ exit
+exit
+
+Script done on 2021-02-18 15:23:14+05:30

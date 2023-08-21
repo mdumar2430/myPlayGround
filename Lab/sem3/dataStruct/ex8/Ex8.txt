@@ -1,0 +1,446 @@
+Script started on 2021-02-23 09:36:05+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ cat binHeapHead.h 
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+class College
+{
+public:
+    College(); // Default constructor
+    College(string,string,string,int,int,int); // Parameterized constructor	
+    College(const College &);
+    ~College(); // Destructor
+    void setNoOfStud(int);
+    int getNoOfStud();
+    void setNoOfFac(int);
+    int getNoOfFac();
+    void setCode(int);
+    void setName(string);
+    void setCity(string);
+    void setAcc(string);
+    string getAcc();
+    string getName();
+    string getCity();
+    void dispDetails(); // To display the details of the employees
+    int getCode();
+    friend istream & operator >>(istream &, College &);
+private:
+    string name,city,acc;
+    int noOfStud,noOfFac,code;
+    friend class BinHeap;
+};
+class BinHeap
+{
+public:
+    BinHeap(int);
+    int isEmpty();
+    int isFull();
+    int enqueue(College);
+    College dequeue();
+    College findMin();
+    void display();
+private:
+    College *C;
+    int capacity,hsize;
+};
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ cat binHeapImp.cpp
+#include"binHeapHead.h"
+College::College()
+{
+    name="";	
+    city="";
+    acc="";
+    code=0;
+    noOfFac=0;
+    noOfStud=0;
+}
+College::College(string name,string city,string acc,int noOfStud,int noOfFac,int code)
+{
+    this->name=name;
+    this->code=code;
+    this->city=city;
+    this->acc=acc;
+}
+College::College(const College & ref)
+{
+    name=ref.name;
+    code=ref.code;
+    city=ref.city;
+    acc=ref.acc;
+    noOfFac=ref.noOfFac;
+    noOfStud=ref.noOfStud;
+}
+College:: ~College()
+{
+}
+void College::setName(string n)
+{
+    name=n;
+}
+void College::setCity(string c)
+{
+    city=c;
+}
+void College::setAcc(string a)
+{
+    acc=a;
+}
+void College::setNoOfStud(int S)
+{
+    noOfStud=S;
+}
+void College::setNoOfFac(int f)
+{
+    noOfFac=f;
+}
+void College::setCode(int c)
+{
+    code=c;
+}
+string College::getName()
+{
+    return name;
+}
+string College::getCity()
+{
+    return city;
+}
+string College::getAcc()
+{
+    return acc;
+}
+int College::getNoOfStud()
+{
+    return noOfStud;
+}
+int College::getNoOfFac()
+{
+    return noOfFac;
+}
+void College::dispDetails()
+{
+    cout<<name<<" \t "<<city<<" \t "<<acc<<" \t\t "<<getNoOfStud()<<" \t\t "<<noOfFac<<"\t\t"<<code<<"\n";
+}
+int College::getCode()
+{
+    return code;
+}
+istream & operator >>(istream& myin ,College& C)
+{
+    cout<<"\nEnter the name of the College:";
+    myin>>C.name;			
+    C.setName(C.name);
+    cout<<"\nEnter the city name:";
+    myin>>C.city;
+    C.setCity(C.city);
+    cout<<"\nEnter Accreditations of the college:";
+    myin>>C.acc;
+    C.setAcc(C.acc);
+    cout<<"\nEnter no. of students studying:";
+    myin>>C.noOfStud;
+    C.setNoOfStud(C.noOfStud);
+    cout<<"\nEnter no. of faculty working:";
+    myin>>C.noOfFac;
+    C.setNoOfFac(C.noOfFac);
+    cout<<"\nEnter College code:";
+    myin>>C.code;
+    C.setCode(C.code);
+    return myin;
+}
+BinHeap::BinHeap(int cap)
+{
+    hsize=0;
+    capacity=cap;
+    C=new College[capacity+1];
+}
+int BinHeap::isEmpty()
+{
+    return(hsize==0);
+}
+int BinHeap::isFull()
+{
+    return(capacity==hsize);
+}
+int BinHeap::enqueue(College ins)
+{
+    if(isFull())
+        return -1;
+    else
+    {
+        int ctnode =++hsize;
+        while(ctnode!=1 && C[ctnode/2].code>ins.code)
+        {
+            C[ctnode]=C[ctnode/2];
+            ctnode/=2;
+        }
+        C[ctnode]=ins;
+        return 1;
+    }
+}
+College BinHeap::dequeue() //remove an element (delete min)
+{
+    if(isEmpty())
+    {
+        College col;
+        return col;
+    }
+    else
+    {
+        College temp=C[1];
+        College last=C[hsize--];
+        int low_child=2;
+        int ctnode=1;	
+        while(low_child <= hsize)
+        {
+            if(low_child<hsize && C[low_child].code>C[low_child+1].code)
+                    low_child++;
+            if(last.code<=C[low_child].code) //last element replaced is the min element
+                    break;
+            C[ctnode]=C[low_child];
+            ctnode=low_child;
+            low_child=ctnode*2;
+        }
+        C[ctnode]=last;
+        return temp;
+    }
+}
+College BinHeap::findMin() //find minimum element
+{
+    if(!isEmpty())
+        return C[1];	
+    else
+    {
+        College temp;
+        return temp;
+    }
+}
+void BinHeap::display() //display the heap
+{
+    if(isEmpty())
+        cout<<"List is Empty\n";
+    else
+    {
+        int i;
+        for(i=1;i<=hsize;i++)
+            C[i].dispDetails();
+    }
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ cat binHeapApp.cpp 
+#include"binHeapHead.h"
+int main()
+{
+    string name,city,acc;
+    int code,noOfFac,noOfStud,cap,size;
+    cout<<"\nEnter capacity:";
+    cin>>cap;
+    BinHeap h(cap);
+    int ch=0;
+    while(ch<=6)
+    {
+        cout<<"\n1. Insert an College.";
+        cout<<"\n2. Remove an College.";
+        cout<<"\n3. Find the first College.";
+        cout<<"\n4. Display all College details.";
+        cout<<"\n5. Exit.";
+        cout<<"\n\nEnter your option : ";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:
+                {
+                    College ins;
+                    cin>>ins;
+                    if(h.enqueue(ins)==1)
+                        cout<<"\n----------> College inserted <----------.";
+                    else
+                        cout<<"\n ---->List is full.";
+                    break;
+                }
+            case 2:
+                {
+                    College del=h.dequeue();
+                    if(del.getCode()==0)
+                        cout<<"\n ---->List is empty.";
+                    else
+                    {
+                        cout<<"\nName\tCity\tAccreditation\tno.Of Students\tno.Of Faculty\tcode\n";
+                        del.dispDetails();
+                    }
+                    break;
+                }
+            case 3:
+                {
+                    College temp=h.findMin();
+                    if(temp.getCode()==0)
+                        cout<<"\n ----->List is empty.";
+                    else
+                    {
+                        cout<<"\nName\tCity\tAccreditation\tno.Of Students\tno.Of Faculty\tcode\n";
+                        temp.dispDetails();
+                    }
+                    break;
+                }
+            case 4:
+                {
+                    cout<<"\n Name \t City \t Accreditation \t no.Of Students \t no.Of Faculty \t code \n";
+                    h.display();
+                    break;
+                }
+            case 5:
+                exit(0);
+            default:
+                cout<<"\n Invalid input.\n";
+        }
+    }
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ cat makefile
+out.exe:binHeapImp.o binHeapApp.o
+    g++ -o out.exe binHeapImp.o binHeapApp.o
+binHeapImp.o:binHeapImp.cpp
+    g++ -c binHeapImp.cpp
+binHeapApp.o:binHeapApp.cpp
+    g++ -c binHeapApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ make
+make: 'out.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ ./out.exe 
+
+Enter capacity:4
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 1
+
+Enter the name of the College:MSEC
+
+Enter the city name:Vnr
+
+Enter Accreditations of the college:NAAC
+
+Enter no. of students studying:1678
+
+Enter no. of faculty working:1554
+
+Enter College code:1456
+
+----------> College inserted <----------.
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 4
+
+ Name 	 City 	 Accreditation 	 no.Of Students 	 no.Of Faculty 	 code 
+MSEC 	 Vnr 	 NAAC 		 1678 		 1554		1456
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 1
+
+Enter the name of the College:VIT
+
+Enter the city name:vellore
+
+Enter Accreditations of the college:AICTE
+
+Enter no. of students studying:1789
+
+Enter no. of faculty working:1567
+
+Enter College code:2567
+
+----------> College inserted <----------.
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 4
+
+ Name 	 City 	 Accreditation 	 no.Of Students 	 no.Of Faculty 	 code 
+MSEC 	 Vnr 	 NAAC 		 1678 		 1554		1456
+VIT 	 vellore 	 AICTE 		 1789 		 1567		2567
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 3
+
+Name	City	Accreditation	no.Of Students	no.Of Faculty	code
+MSEC 	 Vnr 	 NAAC 		 1678 		 1554		1456
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 2
+
+Name	City	Accreditation	no.Of Students	no.Of Faculty	code
+MSEC 	 Vnr 	 NAAC 		 1678 		 1554		1456
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 2
+
+Name	City	Accreditation	no.Of Students	no.Of Faculty	code
+VIT 	 vellore 	 AICTE 		 1789 		 1567		2567
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 2
+
+ ---->List is empty.
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 3
+
+ ----->List is empty.
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 4
+
+ Name 	 City 	 Accreditation 	 no.Of Students 	 no.Of Faculty 	 code 
+List is Empty
+
+1. Insert an College.
+2. Remove an College.
+3. Find the first College.
+4. Display all College details.
+5. Exit.
+
+Enter your option : 5
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex8$ exit
+exit
+
+Script done on 2021-02-23 09:38:49+05:30

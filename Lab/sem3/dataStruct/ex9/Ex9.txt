@@ -1,0 +1,433 @@
+Script started on 2021-02-23 11:59:27+05:30 
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ cat head.h
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+class College
+{
+public:
+    College(); // Default constructor
+    College(string,string,string,int,int,int); // Parameterized constructor
+    College(const College &);
+    ~College(); // Destructor
+    void dispDetails(); 
+    int getCode();
+private:
+    string name,city,acc;
+    int code,noOfStud,noOfFac;
+    friend class HashTable;
+};
+class HashTable //hashtable (linear probing)
+{
+public:
+    HashTable(int);
+    int hash(int,int); //hash function
+    int insert(College,int); //insert an element
+    int remove(int,int); //remove an element
+    int search(int,int); //search for an element
+    College findElement(int,int); //find an element
+    void display(); //display all elements
+private:
+    int capacity; //bucket size
+    int size; //size
+    College *C; 
+};
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ cat imp.cpp
+#include"head.h"
+College::College()
+{
+    name="";
+    city="";
+    acc="";
+    code=0;
+    noOfStud=0;
+    noOfFac=0;
+}
+College::College(string name,string city,string acc,int noOfStud,int noOfFac,int code)
+{
+    this->name=name;
+    this->city=city;
+    this->acc=acc;
+    this->code=code;
+    this->noOfStud=noOfStud;
+    this->noOfFac=noOfFac;
+}
+College::College(const College & col)
+{
+    name=col.name;
+    city=col.city;
+    acc=col.acc;
+    code=col.code;
+    noOfStud=col.noOfStud;
+    noOfFac=col.noOfFac;
+}
+College:: ~College()
+{
+    name="";
+    city="";
+    acc="";
+    noOfStud=0;
+    noOfFac=0;
+    code=0;
+}
+
+void College::dispDetails()
+{
+    cout<<name<<"\t"<<city<<"\t"<<acc<<"\t\t"<<noOfStud<<"\t\t\t"<<noOfFac<<"\t\t"<<code<<"\n";
+}
+int College::getCode()
+{
+    return code;
+}
+HashTable :: HashTable(int mod)
+{
+    capacity =mod;
+    C= new College[capacity];
+    size =0;
+}
+int HashTable :: hash(int code,int mod)
+{
+    return code%mod;
+}
+int HashTable::insert(College ins,int mod)
+{
+    if(size==capacity)
+        return -1;
+    int hashval=hash(ins.getCode(),mod);
+    while(C[hashval].getCode()!=0 && C[hashval].getCode()!=ins.getCode())
+    {
+        hashval=hash(hashval+1,mod);
+    }
+    if(C[hashval].getCode()==ins.getCode())
+        return -2;
+    C[hashval]=ins;
+    size++;
+    return 1;
+}
+int HashTable::remove(int code,int mod)
+{
+    if(size==0)
+        return -1;
+    int hashval=hash(code,mod);
+    int flag=0;
+    while(flag <= hashval)	
+    {
+        if(C[hashval].getCode()!=code)
+        {
+            hashval=hash(hashval+1,mod);
+            flag++;
+            continue;
+        }
+        else
+        {
+            C[hashval].~College();
+            return 1;
+        }
+    }
+    return -2;
+}
+int HashTable::search(int code,int mod)
+{
+    if(size==0)
+        return -1;
+    int hashval=hash(code,mod);
+    int flag=1;
+    while(flag <= hashval)
+    {
+        if(C[hashval].getCode()!=code)
+        {
+            hashval=hash(hashval+1,mod);
+            continue;
+        }
+        else
+            return hashval;
+        flag++;
+    }
+    return -2;
+}
+College HashTable::findElement(int code,int mod)
+{
+    College col;
+    if(size==0)
+        return col; //hash table is empty
+    int hashval=hash(code,mod);
+    int flag=1;
+    while(flag <= hashval)
+    {
+        if(C[hashval].getCode()!=code)
+        {
+            hashval=hash(hashval+1,mod);
+            continue;
+        }
+        else
+            return C[hashval]; //element is found
+        flag++;
+    }
+    return col; //element not found
+}
+void HashTable::display() //display all elements
+{
+    if(size==0)
+        cout<<"No Employees in the list\n";
+    else
+    {
+    int i;
+    for(i=0;i<capacity;i++)
+        C[i].dispDetails();
+    }
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ cat app.cpp
+#include"head.h"
+int main()
+{
+    string name,city,acc;
+    int noOfStud,noOfFac,code,cap,mod;
+    cout<<"\nEnter capacity:";
+    cin>>mod;
+    HashTable h(mod);
+    int ch=0;
+    while(true)
+    {
+        cout<<"\n\n1.Insert a College.";
+        cout<<"\n2.Remove a College.";
+        cout<<"\n3.Search a College by code.";
+        cout<<"\n4.Find an College.";
+        cout<<"\n5.Display College details.";
+        cout<<"\n6.Exit.";
+        cout<<"\n Enter your option : ";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:
+                {
+                    cout<<"\nEnter the name of the College: ";
+                    cin>>name;
+                    cout<<"\nEnter city: ";
+                    cin>>city;
+                    cout<<"\nEnter accreditation: ";
+                    cin>>acc;
+                    cout<<"\n Enter no.of Students:";
+                    cin>>noOfStud;
+                    cout<<"\nEnter no. of faculty:";
+                    cin>>noOfFac;
+                    cout<<"\nEnter counselling code:";
+                    cin>>code;
+                    College col(name,city,acc,noOfStud,noOfFac,code);
+                    int temp=h.insert(col,mod);
+                    if(temp==1)	
+                        cout<<"\n------>College inserted.";
+                    else if(temp== -1)
+                        cout<<"\n------>List is full.";
+                    else
+                        cout<<"\n----->Duplicate College cannot be inserted.";
+                    break;
+                }
+            case 2:
+                {
+                    int key;
+                    cout<<"\nEnter the code of the College to be removed.";
+                    cin>>key;
+                    int temp=h.remove(key,mod);
+                    if(temp == -1)
+                        cout<<"\n---->List is empty.\n";
+                    else if(temp == -2)
+                        cout<<"\n---->College not found.";
+                    else
+                        cout<<"\n---->College deleted.";
+                    break;
+                }
+            case 3:
+                {
+                    int key;
+                    cout<<"\nEnter the code of the College to be searched:";
+                    cin>>key;
+                    int temp=h.search(key,mod);
+                    if(temp==-1)
+                        cout<<"\n---->List is empty.";
+                    else if(temp==-2)
+                        cout<<"\n---->College not found.";
+                    else
+                        cout<<"\n---->College found in the bucket:"<<temp;
+                    break;
+                }
+            case 4:
+                {
+                    int key;
+                    cout<<"\nEnter the code of the College to be searched:";
+                    cin>>key;
+                    College srch=h.findElement(key,mod);
+                    if(srch.getCode() == 0)
+                        cout<<"\n---->College not found.";
+                    else
+                    {
+                        cout<<"\n Name \t city \t accreditation \t no.of students \t no.of faculty \t code \n";
+                        srch.dispDetails();
+                    }
+                    break;
+                }
+            case 5:
+                {
+                        cout<<"\n Name \t city \t accreditation \t no.of students \t no.of faculty \t code \n";
+                        h.display();
+                        break;
+                }
+            case 6:
+                exit(0);
+            default:
+                cout<<"\n--->Invalid input.\n";
+        }
+    }
+}
+
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ cat makefile
+out.exe:imp.o app.o
+    g++ -o out.exe imp.o app.o
+imp.o:imp.cpp
+    g++ -c imp.cpp
+app.o:app.cpp
+    g++ -c app.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ make
+g++ -c app.cpp
+g++ -o out.exe imp.o app.o
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ ./out.exe 
+
+Enter capacity:11
+
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 1
+
+Enter the name of the College: MSEC
+
+Enter city: vnr
+
+Enter accreditation: NAAC
+
+ Enter no.of Students:12
+
+Enter no. of faculty:13
+
+Enter counselling code:2678
+
+------>College inserted.
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 1
+
+Enter the name of the College: PSG
+
+Enter city: cbe
+
+Enter accreditation: AICTE
+
+ Enter no.of Students:567
+
+Enter no. of faculty:678
+
+Enter counselling code:1009
+
+------>College inserted.
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 5
+
+ Name 	 city 	 accreditation 	 no.of students 	 no.of faculty 	 code 
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+MSEC	vnr	NAAC		12			13		2678
+                0			0		0
+                0			0		0
+PSG	cbe	AICTE		567			678		1009
+                0			0		0
+                0			0		0
+
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 2
+
+Enter the code of the College to be removed.1009
+
+---->College deleted.
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 5
+
+ Name 	 city 	 accreditation 	 no.of students 	 no.of faculty 	 code 
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+MSEC	vnr	NAAC		12			13		2678
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+                0			0		0
+
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 4
+
+Enter the code of the College to be searched:2678
+
+ Name 	 city 	 accreditation 	 no.of students 	 no.of faculty 	 code 
+MSEC	vnr	NAAC		12			13		2678
+
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 3
+
+Enter the code of the College to be searched:2678
+
+---->College found in the bucket:5
+
+1.Insert a College.
+2.Remove a College.
+3.Search a College by code.
+4.Find an College.
+5.Display College details.
+6.Exit.
+ Enter your option : 6
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex9$ exit
+exit
+
+Script done on 2021-02-23 12:01:24+05:30

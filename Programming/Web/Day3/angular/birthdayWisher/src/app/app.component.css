@@ -1,0 +1,29 @@
+*{transition:all 0.3s ease-in-out;}
+
+.container{
+  clear:both;
+  overflow:auto;
+  background-color: rgb(34, 70, 70);
+  width: 100%
+}
+
+nav{float:right;}
+
+.logo h3{
+    float:left;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 40px;
+    font-size: 25px;
+    color: beige;
+}
+
+ul li{
+  display: inline-block; padding:10px;
+  font-size:13px; font-family:raleway;
+  color: aquamarine;
+}
+
+ul li:hover{
+  color:orange;
+  
+}

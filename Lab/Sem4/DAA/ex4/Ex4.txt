@@ -1,0 +1,98 @@
+Script started on 2021-03-24 21:01:23+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ cat heapHead.h 
+#include <iostream>
+using namespace std;
+void heapArrange(int [], int,int);
+void heapSort(int [], int);
+void display(int [], int);
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ cat heapImp.cpp 
+#include"heapHead.h"
+void heapArrange(int arr[], int n, int i)
+{
+	int largest=i;
+	int l = 2*i +1;
+	int r = 2*i +2;
+	if (l < n && arr[l] > arr[largest])
+		largest = l;
+	if (r < n && arr[r] > arr[largest])
+		largest = r;
+	if (largest != i) {
+		int temp=arr[i];
+		arr[i]=arr[largest];
+		arr[largest]=temp;
+		heapArrange(arr,n,largest);
+	}
+}
+
+void heapSort(int arr[], int n)
+{
+	for(int i=n/2-1;i>=0;i--)
+		heapArrange(arr, n, i);
+	for (int i = n - 1; i >= 0; i--) {
+		int t=arr[0];
+		arr[0]=arr[i];
+		arr[i]=t;
+		heapArrange(arr,i,0);
+	}
+}
+
+void display(int arr[], int n)
+{
+	for (int i = 0; i < n; ++i)
+		cout << arr[i] << " ";
+	cout << "\n";
+}
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ cat heapApp.cpp 
+#include"heapHead.h"
+int main()
+{
+	int *arr,n,i;
+	cout<<"\nThis application uses HEAPSORT to sort the elements\n";
+	cout<<"Enter number of elements:";
+	cin>>n;
+	arr=new int[n];
+	cout<<"Enter the required elements\n";
+	for(i=0;i<n;i++)
+	{
+	  cin>>arr[i];
+	}
+	heapSort(arr, n);
+	cout<<"Sorted array  \n";
+	display(arr, n);
+}
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ cat makefile
+HEAPSORT.exe:heapImp.o heapApp.o
+	g++ -o HEAPSORT.exe heapImp.o heapApp.o
+heapImp.o:heapImp.cpp
+	g++ -c heapImp.cpp
+heapApp.o:heapApp.cpp
+	g++ -c heapApp.cpp
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ make
+g++ -c heapApp.cpp
+g++ -o HEAPSORT.exe heapImp.o heapApp.o
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ ./HEAPSORT.exe 
+
+This application uses HEAPSORT to sort the elements
+Enter number of elements:10
+Enter the required elements
+13
+78
+43
+26
+7
+43
+22
+68
+31
+48
+Sorted array  
+7 13 22 26 31 43 43 48 68 78 
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex4$ exit
+exit
+
+Script done on 2021-03-24 21:02:36+05:30

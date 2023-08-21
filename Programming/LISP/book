@@ -1,0 +1,2 @@
+(setq b '("Harry Potter" "Hello men in black"))
+(write b)

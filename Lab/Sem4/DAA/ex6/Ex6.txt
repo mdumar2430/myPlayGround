@@ -1,0 +1,102 @@
+Script started on 2021-03-25 16:22:33+05:30
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ cat head.h 
+int floyd(int [10][10],int ,int );
+int min(int,int);
+
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ cat imp.cpp 
+#include"Head.h"
+int min(int x,int y)
+{
+        if(x>y)
+                return y;
+        else
+                return x;
+}
+int floyd(int d[10][10],int r,int c)
+{
+        for(int k=1;k<=r;k++)
+        {
+                for(int i=1;i<=r;i++)
+                {
+                        for(int j=1;j<=c;j++)
+                        {
+                                d[i][j]=min(d[i][j],d[i][k]+d[k][j]);
+                        }
+                }
+        }
+}
+
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ cat app.cpp 
+#include<iostream>
+#include"Head.h"
+using namespace std;
+int main()
+{
+        int r,c,x,y,a[10][10],j;
+        cout<<"Enter the row\n";
+        cin>>r;
+        cout<<"Enter the column\n";
+        cin>>c;
+        cout<<"Enter the matrix elements\n";
+        for(int i=1;i<=r;i++)
+        {
+                for(j=1;j<=c;j++)
+                {
+                        cin>>a[i][j];
+                }
+        }
+        cout<<"After the elements are updated by using floyds algorithm\n";
+        floyd(a,r,c);
+        for(int k=1;k<=r;k++)
+        {
+                for(j=1;j<=c;j++)
+                {
+
+                        cout<<a[k][j];
+                        cout<<"\t";
+                }
+                cout<<"\n";
+        }
+
+}
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ cat makefile
+out.exe:imp.o app.o
+	c++ -o  out.exe imp.o app.o
+imp.o:imp.cpp
+	c++ -c  imp.cpp
+app.o:app.cpp
+	c++ -c  app.cpp
+
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$make
+make: 'out.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ ./out.exe 
+Enter the row
+4
+Enter the column
+4
+Enter the matrix elements
+1
+78
+33
+12
+6
+10
+55
+3
+33
+27
+11
+19
+9
+8
+7
+32
+After the elements are updated by using floyds algorithm
+1	20	19	12	
+6	10	10	3	
+28	27	11	19	
+9	8	7	11	
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex6$ exit
+exit
+
+Script done on 2021-03-25 16:23:32+05:30

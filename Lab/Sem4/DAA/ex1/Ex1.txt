@@ -1,0 +1,194 @@
+Script started on 2021-03-24 11:11:38+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$cat closestPair.h
+#include<iostream>
+#include<cmath>
+using namespace std;
+
+class Point
+{
+	private:	
+		int pointNum;
+		int x;
+		int y;
+	public:
+		Point();
+		Point(int,int,int);
+		~Point();
+		void setPointNum(int);
+		void setX(int);
+		void setY(int);
+		int getX();
+		int getY();
+		int getPointNum();
+		friend istream & operator >>(istream& ,Point&);
+		friend ostream & operator <<(ostream& ,Point&);
+};
+float computeDistance(Point,Point);   
+float findClosestPair(Point* ,int ); 
+
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ cat closestPairImp.cpp
+#include"closestPair.h"
+
+Point::Point()
+{
+	pointNum=0;
+	x=0;
+	y=0;
+}
+Point::Point(int p,int x,int y)
+{
+	pointNum=p;
+	this->x=x;
+	this->y=y;
+}
+Point::~Point()
+{
+}
+void Point::setPointNum(int p)
+{
+	pointNum=p;
+}
+void Point::setX(int valX)
+{
+	x=valX;
+}
+void Point::setY(int valY)
+{
+	y=valY;
+}
+int Point::getPointNum()
+{
+	return pointNum;
+}
+int Point::getX()
+{
+	return x;
+}
+int Point::getY()
+{
+	return y;
+}
+istream & operator >>(istream &myin ,Point& P)
+{
+	cout<<"\n Enter Point no.:";
+	myin>>P.pointNum;
+	P.setPointNum(P.pointNum);
+	cout<<"\n Enter X-coordinate:";
+	myin>>P.x;
+	P.setX(P.x);
+	cout<<"\n Enter Y-coordinate:";
+        myin>>P.y;
+	P.setY(P.y);
+	return myin;
+}
+
+ostream & operator <<(ostream &out, Point& P)
+{	
+	out<<"\nP"<<P.getPointNum()<<"("<<P.getX()<<","<<P.getY()<<")\n";
+	return out;
+}
+float computeDistance(Point p1,Point p2)
+{
+	return pow(pow(p1.getX()-p2.getX(),2)+pow(p1.getY()-p2.getY(),2),0.5);
+}
+
+float findClosestPair(Point *P,int size)
+{
+	float minDist=1000.0;
+	float d;
+	for(int i=1;i<=size-1;i++)
+	{
+		for(int j=i+1;j<=size;j++)
+		{       
+			d=computeDistance(P[i],P[j]);
+			if(minDist>d)
+				minDist=d;
+		}
+	}
+	return minDist;
+}
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ cat closestPairApp.cpp
+#include"closestPair.h"
+
+int main()
+{
+	int size;
+	cout<<"\n----------------Closest Pair -by  Brute Force----------------";
+	cout<<"\nEnter number of Points:";
+	cin>>size;
+	Point *p=new Point[size];
+	cout<<"\n -------------Enter the Points----------------";
+	for(int i=1;i<=size;i++)
+	{
+		cin>>p[i];
+	}
+	cout<<"\n Given Points are:\n";
+	for(int i=1;i<=size;i++)
+		cout<<p[i];
+	float ans;
+	ans=findClosestPair(p,size);
+	cout<<"\nDistance between the closest pair of points among the given is "<<ans<<"\n";
+
+}
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ cat makefile
+out.exe:closestPairImp.o closestPairApp.o
+	        g++ -o out.exe closestPairImp.o closestPairApp.o
+closestPairImp.o:closestPairImp.cpp
+	        g++ -c closestPairImp.cpp
+closestPairApp.o:closestPairApp.cpp
+	        g++ -c closestPairApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ make
+make: 'out.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ ./out.exe 
+
+----------------Closest Pair -by  Brute Force----------------
+Enter number of Points:5
+
+ -------------Enter the Points----------------
+ Enter Point no.:1
+
+ Enter X-coordinate:2
+
+ Enter Y-coordinate:3
+
+ Enter Point no.:2
+
+ Enter X-coordinate:1
+
+ Enter Y-coordinate:1
+
+ Enter Point no.:3
+
+ Enter X-coordinate:0
+
+ Enter Y-coordinate:0
+
+ Enter Point no.:4
+
+ Enter X-coordinate:6
+
+ Enter Y-coordinate:1
+
+ Enter Point no.:5
+
+ Enter X-coordinate:1
+
+ Enter Y-coordinate:4
+
+ Given Points are:
+
+P1(2,3)
+
+P2(1,1)
+
+P3(0,0)
+
+P4(6,1)
+
+P5(1,4)
+
+Distance between the closest pair of points among the given is 1.41421
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex1$ exit
+exit
+
+Script done on 2021-03-24 11:13:19+05:30 

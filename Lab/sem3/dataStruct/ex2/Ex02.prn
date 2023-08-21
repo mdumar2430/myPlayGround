@@ -1,0 +1,1079 @@
+Script started on 2021-02-18 20:42:39+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2[00m$ cat LList.h
+#include<iostream>
+#include<stdlib.h>
+#include<string>
+using namespace std;
+class College
+{
+	private:
+		string name;
+		string city;
+		string acc;
+		int noOfStud;
+		int noOfFac;
+	public:
+		College();
+		College(string,string,string,int,int);
+		College(const College &);
+		~College();
+		void setName(string);
+		string getName();
+		void setCity(string);
+		string getCity();
+		void setAcc(string);
+		string getAcc();
+		void setNoOfStud(int);
+		int getNoOfStud();
+		void setNoOfFac(int);
+		int getNoOfFac();
+		friend istream & operator >>(istream& ,College&);
+		friend ostream & operator <<(ostream& ,College&);
+};
+class Node
+{
+	private:
+		College data;
+		Node *next;
+	public:
+		Node();
+		Node(College,Node*);
+		Node(const Node &);
+		~Node();
+		friend class L_List;
+};
+class L_List
+{
+	private:
+		Node *first;
+	public:
+		L_List();
+		L_List(Node *);
+		L_List(const L_List &);
+		~L_List();
+		int isEmpty();
+		void insertAtFirst(Node *);
+		void insertAtLast(Node  *);
+		int insertByPos(Node *,int);
+		int deleteAtFirst();
+		int deleteAtLast();
+		int deleteByPos(int);
+		int replaceElementByPos(Node *,int);
+		College searchByPos(int );
+		int makeListEmpty();
+		void displayList();
+};
+
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ cat LListImp.cpp
+#include"LList.h"
+
+College::College()
+{
+	name="";
+	city="";
+	acc="";
+	noOfStud=0;
+	noOfFac=0;
+}
+
+College::College(string name,string city,string acc,int noOfStud,int noOfFac)
+{
+	this->name=name;
+	this->city=city;
+	this->acc=acc;
+	this->noOfStud=noOfStud;
+	this->noOfFac=noOfFac;
+}
+College::College(const College &ref)
+{
+	name=ref.name;
+	city=ref.city;
+	acc=ref.acc;
+	noOfFac=ref.noOfFac;
+	noOfStud=ref.noOfStud;
+}
+College::~College()
+{
+}
+void College::setName(string x)
+{
+	name=x;
+}
+void College::setCity(string x)
+{
+	city=x;
+}
+void College::setAcc(string x)
+{
+	acc=x;
+}
+void College::setNoOfStud(int x)
+{
+	noOfStud=x;
+}
+void College::setNoOfFac(int x)
+{
+	noOfFac=x;
+}
+string College::getName()
+{
+	return name;
+}
+string College::getCity()
+{
+	return city;
+}
+string College::getAcc()
+{
+	return acc;
+}
+int College::getNoOfStud()
+{
+	return noOfStud;
+}
+int College::getNoOfFac()
+{
+	return noOfFac;
+}
+
+istream & operator >>(istream& myin ,College& C)
+{
+	cout<<"\nEnter the name of the College:";
+	myin>>C.name;
+	C.setName(C.name);
+	cout<<"\nEnter the city name:";
+	myin>>C.city;
+	C.setCity(C.city);
+	cout<<"\nEnter Accreditations of the college:";
+	myin>>C.acc;
+	C.setAcc(C.acc);
+	cout<<"\nEnter no. of students studying:";
+	myin>>C.noOfStud;
+	C.setNoOfStud(C.noOfStud);
+	cout<<"\nEnter no. of faculty working:";
+	myin>>C.noOfFac;
+	C.setNoOfFac(C.noOfFac);
+	return myin;
+}
+ostream & operator <<(ostream& myout ,College& C)
+{
+	myout<<"\n\nName:"<<C.getName();
+	myout<<"\nCity:"<<C.getCity();
+	myout<<"\nAccreditations:"<<C.getAcc();
+	myout<<"\nNo. of Students:"<<C.getNoOfStud();
+	myout<<"\nNo. of Faculty:"<<C.getNoOfFac();
+	return myout;
+}
+
+Node::Node()
+{
+	data=College();
+	next=NULL;
+}
+Node::Node(College data,Node *n)
+{
+	this->data=data;
+	next=n;
+}
+Node::Node(const Node &ref)
+{
+	data=ref.data;
+	next=ref.next;
+}
+Node::~Node()
+{
+	data=College();
+	next=NULL;
+}
+
+L_List::L_List()
+{
+	first=NULL;
+}
+L_List::L_List(Node *f)
+{
+	first=f;
+}
+L_List::L_List(const L_List &f)
+{
+	first=f.first;
+}
+L_List::~L_List()
+{
+	first=NULL;
+}
+int L_List::isEmpty()
+{
+	if(first==NULL)
+		return 1;
+	else
+		return 0;
+}
+void L_List::insertAtFirst(Node *newNode)
+{
+	if(isEmpty())
+		first=newNode;
+	else
+	{
+		newNode->next=first;
+		first=newNode;
+	}
+}
+
+void L_List::insertAtLast(Node *newNode)
+{
+	if(isEmpty())
+		first=newNode;
+	else
+	{
+		Node *temp=first;
+		while(temp->next!=NULL)
+		{
+			temp=temp->next;
+		}
+		temp->next=newNode;
+	}
+}
+
+int L_List::deleteAtFirst()
+{
+	if(!isEmpty())
+	{
+		Node *temp=first;
+		first=first->next;
+		delete temp;
+		temp=NULL;
+		return 1;
+	}
+	else
+		return 0;
+}
+
+int L_List::deleteAtLast()
+{
+	if(!isEmpty())
+	{
+		Node *temp=first;
+		if(temp->next==NULL)
+		{
+			first=NULL;
+			return 1;
+		}
+		Node *prev=first;
+		while(temp->next!=NULL)
+		{
+			prev=temp;
+			temp=temp->next;
+		}
+		prev->next=NULL;
+		temp=NULL;
+		delete temp;
+		return 1;
+	}
+	else
+		return 0;
+}
+
+int L_List::insertByPos(Node *newNode,int pos)
+{
+	if(!isEmpty())
+	{
+		int i=1;
+		Node *temp=first;
+		while(temp->next!=NULL && i!=pos-1)
+		{
+			temp=temp->next;
+			i++;
+		}
+		if(i==pos-1)
+		{
+			newNode->next=temp->next;
+			temp->next=newNode;
+			return 1;
+		}
+		return 0;
+	}
+	else
+	{
+		if(pos==1)
+		{
+			first=newNode;
+			return 1;
+		}
+		return 0;
+	}
+}
+
+int L_List::deleteByPos(int pos)
+{
+	if(!isEmpty())
+	{
+		if(pos==1)
+		{
+			Node *temp=first;
+			first=first->next;
+			delete temp;
+			temp=NULL;
+			return 1;
+		}
+		else
+		{
+			Node *temp=first;
+			Node *prev=first;
+			int i=1;
+			while(temp->next!=NULL && i!=pos)
+			{
+				prev=temp;
+				temp=temp->next;
+				i++;
+			}
+			if(i==pos)
+			{
+				prev->next=temp->next;
+				delete temp;
+				temp=NULL;
+				return 1;
+			}
+			return 0;
+		}
+	}
+	else
+		return 0;
+}
+
+int L_List::replaceElementByPos(Node *newNode,int pos)
+{
+	if(!isEmpty())
+	{
+		if(pos==1)
+		{
+			Node *temp=first;
+			newNode->next=temp->next;
+			first=newNode;
+			delete temp;
+			temp=NULL;
+			return 1;
+		}
+		else
+		{
+			Node *temp=first;
+			Node *prev=first;
+			int i=1;
+			while(temp->next!=NULL && i!=pos)
+			{
+				prev=temp;
+				temp=temp->next;
+				i++;
+			}
+			if(i==pos)
+			{
+				newNode->next=temp->next;
+				prev->next=newNode;
+				delete temp;
+				temp=NULL;
+				return 1;
+			}
+			return 0;
+		}		
+	}
+	else
+		return 0;
+}
+
+College L_List::searchByPos(int pos)
+{
+	if(!isEmpty())
+	{
+		Node *temp=first;
+		int i=1;
+		while(temp->next!=NULL && i!=pos)
+		{
+			temp=temp->next;
+			i++;
+		}
+		if(i==pos)
+			return temp->data;
+		else
+			return College();
+	}
+	else
+		return College();
+}
+ 
+int L_List::makeListEmpty()
+{
+	if(!isEmpty())
+	{
+		first=NULL;
+		return 1;
+	}
+	else
+		return 0;
+}
+void L_List::displayList()
+{
+	if(!isEmpty())
+	{
+		Node *temp=first;
+		while(temp!=NULL)
+		{
+			cout<<temp->data;
+			temp=temp->next;
+		}
+	}
+	else
+		cout<<"\nList is Empty,Nothing to display!";
+}
+
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ cat LListApp.cpp
+#include"LList.h"
+int main()
+{
+    int ch,i,flag,pos;
+    College col;
+    L_List list;
+    do
+    {
+        cout<<"\n\n|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|";
+        cout<<"\n1.Insert at First\n2.Insert at Last\n3.Insert by Position\n4.Delete at First\n5.Delete at Last\n6.Delete by Position\n7.Replace\n8.Search by Position\n9.Make List Empty\n10.Display list\n11.EXIT\n|----------------------------------------|\n>>Enter your choice:";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1://Insert first
+                {
+                    cout<<"\n\t*************Enter College details to insert at first*************\n";
+                    cin>>col;
+                    Node *ins=new Node(col,NULL);
+                    list.insertAtFirst(ins);
+                    cout<<"\n---------->INSERTION SUCCESSFUL<----------";
+                }
+                break;
+            case 2://Insert Last
+                {
+                    cout<<"\n\t*************Enter College details to insert at Last*************\n";
+                    cin>>col;
+                    Node *ins=new Node(col,NULL);
+                    list.insertAtLast(ins);
+                    cout<<"\n---------->INSERTION SUCCESSFUL<----------";	
+                }
+                break;
+            case 3://Insert by Position
+                {
+                    cout<<"\nEnter the position:";
+                    cin>>pos;
+                    cout<<"\n\t*************Enter College details to insert at the given position*************\n";
+                    cin>>col;
+                    Node *ins=new Node(col,NULL);
+                    flag=list.insertByPos(ins,pos);
+                    if(flag==1)
+                        cout<<"\n---------->INSERTION SUCCESSFUL<----------";
+                    else
+                        cout<<"\n---------->INSERTION FAILED!<----------";
+                    break;
+                }
+            case 4://Delete First
+                cout<<"\n****************Deleting First Entry****************\n";
+                flag=list.deleteAtFirst();
+                if(flag==1)
+                    cout<<"\n---------->DELETION SUCCESSFUL<----------";
+                else
+                    cout<<"\n---------->DELETION FAILED!<----------";
+                break;
+            case 5://Delete Last
+                cout<<"\n****************Deleting Last Entry****************\n";
+                flag=list.deleteAtLast();
+                if(flag==1)
+                    cout<<"\n---------->DELETION SUCCESSFUL<----------";
+                else
+                    cout<<"\n---------->DELETION FAILED!<----------";
+                break;
+            case 6://Delete by Position
+                cout<<"\nEnter the position:";
+                cin>>pos;
+                cout<<"\n****************Deleting Given Entry****************\n";
+                flag=list.deleteByPos(pos);
+                if(flag==1)
+                    cout<<"\n---------->DELETION SUCCESSFUL<----------";
+                else
+                    cout<<"\n---------->DELETION FAILED!<----------";
+                break;
+            case 7://Replace element by position
+                {
+                    College rep;
+                    cout<<"\nEnter the position:";
+                    cin>>pos;
+                    cout<<"\n\t*************Enter Replacement Details*************\n";
+                    cin>>rep;
+                    Node *newNode=new Node(rep,NULL);
+                    flag=list.replaceElementByPos(newNode,pos);
+                    if(flag==1)
+                        cout<<"\n---------->REPLACED SUCCESSFULLY<----------";
+                    else
+                        cout<<"\n---------->REPLACEMENT NOT POSSIBLE<-----------";
+                    break;
+                }
+            case 8://Search Element By position 
+                 cout<<"\nEnter the position to serach:";
+                 cin>>pos;
+                 cout<<"\nSearching... .... ....";
+                 col=list.searchByPos(pos);
+                 if(col.getNoOfStud()!=0)
+                 {
+                     cout<<"\n-------------->Element Found<--------------";
+                     cout<<col;
+                 }
+                 else
+                     cout<<"\n-------------->Element NOT Found<--------------";
+                 break;
+            case 9://Make List Empty
+                 flag=list.makeListEmpty();
+                 if(flag==1)
+                     cout<<"\n------------->List is Emptied now!<-------------";
+                 else 
+                     cout<<"\n------------->List is already Empty<-------------";
+                 break;
+            case 10://Display List
+                 list.displayList();
+                 break;
+            case 11:ch=12;break;
+            default:cout<<"\nInvalid Choice!";break;
+        }
+    }while(ch<=11);
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ cat makefile
+out.exe:LListImp.o LListApp.o
+	g++ -o out.exe LListImp.o LListApp.o
+LListImp.o:LListImp.cpp
+	g++ -c LListImp.cpp
+LListApp.o:LListApp.cpp
+	g++ -c LListApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ make
+make: 'out.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ ./out.exe
+
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:1
+
+	*************Enter College details to insert at first*************
+
+Enter the name of the College:Msec
+
+Enter the city name:vnr
+
+Enter Accreditations of the college:Naaac
+
+Enter no. of students studying:300
+
+Enter no. of faculty working:350
+
+---------->INSERTION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:2
+
+	*************Enter College details to insert at Last*************
+
+Enter the name of the College:SAC
+
+Enter the city name:tvl
+
+Enter Accreditations of the college:Naac
+
+Enter no. of students studying:400
+
+Enter no. of faculty working:480
+
+---------->INSERTION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:3
+
+Enter the position:3
+
+	*************Enter College details to insert at the given position*************
+
+Enter the name of the College:LDC
+
+Enter the city name:mdu
+
+Enter Accreditations of the college:Naac
+
+Enter no. of students studying:600
+
+Enter no. of faculty working:670
+
+---------->INSERTION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:Msec
+City:vnr
+Accreditations:Naaac
+No. of Students:300
+No. of Faculty:350
+
+Name:SAC
+City:tvl
+Accreditations:Naac
+No. of Students:400
+No. of Faculty:480
+
+Name:LDC
+City:mdu
+Accreditations:Naac
+No. of Students:600
+No. of Faculty:670
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:3
+
+Enter the position:2
+
+	*************Enter College details to insert at the given position*************
+
+Enter the name of the College:NEC
+
+Enter the city name:kpy
+
+Enter Accreditations of the college:Naac
+
+Enter no. of students studying:680
+
+Enter no. of faculty working:700
+
+---------->INSERTION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:Msec
+City:vnr
+Accreditations:Naaac
+No. of Students:300
+No. of Faculty:350
+
+Name:NEC
+City:kpy
+Accreditations:Naac
+No. of Students:680
+No. of Faculty:700
+
+Name:SAC
+City:tvl
+Accreditations:Naac
+No. of Students:400
+No. of Faculty:480
+
+Name:LDC
+City:mdu
+Accreditations:Naac
+No. of Students:600
+No. of Faculty:670
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:4
+
+****************Deleting First Entry****************
+
+---------->DELETION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:NEC
+City:kpy
+Accreditations:Naac
+No. of Students:680
+No. of Faculty:700
+
+Name:SAC
+City:tvl
+Accreditations:Naac
+No. of Students:400
+No. of Faculty:480
+
+Name:LDC
+City:mdu
+Accreditations:Naac
+No. of Students:600
+No. of Faculty:670
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:5
+
+****************Deleting Last Entry****************
+
+---------->DELETION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:NEC
+City:kpy
+Accreditations:Naac
+No. of Students:680
+No. of Faculty:700
+
+Name:SAC
+City:tvl
+Accreditations:Naac
+No. of Students:400
+No. of Faculty:480
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:6
+
+Enter the position:2
+
+****************Deleting Given Entry****************
+
+---------->DELETION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:NEC
+City:kpy
+Accreditations:Naac
+No. of Students:680
+No. of Faculty:700
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:7
+
+Enter the position:1
+
+	*************Enter Replacement Details*************
+
+Enter the name of the College:PSN
+
+Enter the city name:tvl
+
+Enter Accreditations of the college:NAAC
+
+Enter no. of students studying:199
+
+Enter no. of faculty working:299
+
+---------->REPLACED SUCCESSFULLY<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:PSN
+City:tvl
+Accreditations:NAAC
+No. of Students:199
+No. of Faculty:299
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:2
+
+	*************Enter College details to insert at Last*************
+
+Enter the name of the College:Msec
+
+Enter the city name:vnr
+
+Enter Accreditations of the college:Naac
+
+Enter no. of students studying:400
+
+Enter no. of faculty working:450
+
+---------->INSERTION SUCCESSFUL<----------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+
+Name:PSN
+City:tvl
+Accreditations:NAAC
+No. of Students:199
+No. of Faculty:299
+
+Name:Msec
+City:vnr
+Accreditations:Naac
+No. of Students:400
+No. of Faculty:450
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:8
+
+Enter the position to serach:1
+
+Searching... .... ....
+-------------->Element Found<--------------
+
+Name:PSN
+City:tvl
+Accreditations:NAAC
+No. of Students:199
+No. of Faculty:299
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:9
+
+------------->List is Emptied now!<-------------
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:10
+
+List is Empty,Nothing to display!
+
+|>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<|
+1.Insert at First
+2.Insert at Last
+3.Insert by Position
+4.Delete at First
+5.Delete at Last
+6.Delete by Position
+7.Replace
+8.Search by Position
+9.Make List Empty
+10.Display list
+11.EXIT
+|----------------------------------------|
+>>Enter your choice:11
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex2$ exit
+Exit
+
+Script done on 2021-02-18 20:46:35+05:30

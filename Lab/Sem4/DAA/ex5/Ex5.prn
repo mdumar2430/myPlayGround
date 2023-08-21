@@ -1,0 +1,107 @@
+Script started on 2021-03-25 14:06:35+05:30
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ cat horHead.h
+#include<iostream>
+using namespace std;
+int* ShiftTable(string,int);
+int Horspools(string,string,int,int);
+
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ cat horImp.cpp
+#include"horHead.h"
+int*ShiftTable(string P,int len)
+{
+	int *Table = new int[300];
+	for(int i=0;i<300;i++)
+	{
+	  Table[i] = len; //filling table 
+	}
+	for(int j=0;j<len-2;j++)
+	{
+	  Table[int(P[j])] = len-1-j; //filling needed pattern value
+	}
+	return Table;
+}
+int Horspools(string P,string T,int plen,int tlen)
+{
+	int *Table=ShiftTable(P,plen);
+	int i = plen-1,k;
+	while(i<=tlen-1)
+	{
+	  k=0;
+	  while(k<=plen-1 && P[plen-1-k]==T[i-k])
+	  {
+	    k=k+1;
+	  }
+	  if(k == plen) 
+		  return i-plen+1;
+	  else
+            i = i+Table[int(T[i])];
+	}
+	return -1;
+}
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ cat horApp.cpp
+#include"horHead.h"
+int main()
+{
+	string p,t;
+	int plen,tlen,res,opt;
+	cout<<"\nUse UNDERSCORES '_' instead leaving blank\n";
+	cout<<"\nEnter your text\n";
+	do
+	{
+	  cin>>t;
+	}while(!"\n");
+	tlen=t.size();
+	do
+	{
+	  cout<<"\nEnter the pattern:";
+	  do
+ 	  { 
+	    cin>>p;
+	  }while(!"\n");
+	  plen=p.size();
+	  res = Horspools(p,t,plen,tlen);
+	  if(res != -1)
+	  {
+	 	cout<<"\nThe pattern '"<<p<<"' is present in the text from index ";
+	  	cout<<res<<" to "<<res+(plen-1)<<"\n";
+	  }
+	  else
+	   	cout<<"\nThe pattern '"<<p<<"' is not present in the text\n";
+	  cout<<"\nTo continue to search in the same text press '1'";
+	  cout<<" else press any other key\n";
+	  cin>>opt;
+	}while(opt == 1);
+}
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ cat makefile
+HP.exe:horImp.o horApp.o
+	g++ -o HP.exe horImp.o horApp.o
+horImp.o:horImp.cpp
+	g++ -c horImp.cpp
+horApp.o:horApp.cpp
+	g++ -c horApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ make
+make: 'HP.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ ./HP.exe 
+
+Use UNDERSCORES '_' instead leaving blank
+
+Enter your text
+I_am_from_tirunelveeli
+
+Enter the pattern:veeli
+
+The pattern 'veeli' is present in the text from index 17 to 21
+
+To continue to search in the same text press '1' else press any other key
+1
+
+Enter the pattern:veli
+
+The pattern 'veli' is not present in the text
+
+To continue to search in the same text press '1' else press any other key
+2
+mdumar@MdUmar: /mnt/d/Lab/Sem4/DAA/ex5$ exit
+exit
+
+Script done on 2021-03-25 14:09:01+05:30

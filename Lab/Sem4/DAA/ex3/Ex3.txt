@@ -1,0 +1,106 @@
+Script started on 2021-03-24 12:27:11+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ cat quickSort.h
+#include<iostream>
+using namespace std;
+void quickSort(int*,int,int,int);
+int partition(int*,int,int,int);
+void display(int*,int);
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ cat quickSort.cpp 
+#include"quickSort.h"
+void quickSort(int *a,int p, int q,int n)
+{
+	int temp; 
+	if(p<q)
+	{
+	  temp = partition(a,p,q,n);
+	  quickSort(a,p,temp-1,n);
+	  quickSort(a,temp+1,q,n);
+	}
+}
+int partition(int *a,int p,int q,int n)
+{
+	int pivot,temp1,start=0,end=n;
+	pivot = a[p];
+	start = p;  //start to move towards RHS
+	end = q;   //end to move towards LHS
+	while(start < end)
+	{
+	  while(a[start] <= pivot && start < end)
+	  {
+	    start = start + 1;
+	  }
+	  while(a[end] > pivot)
+	  {
+            end = end - 1;
+	  }
+	  if(start < end)
+	  {
+	    temp1 = a[start];
+	    a[start] = a[end];
+	    a[end] = temp1;
+	  }
+	}
+	a[p]=a[end];
+	a[end]=pivot;
+	return end;
+}
+void display(int *a,int n)
+{
+	for(int i=1;i<=n;i++)
+	{
+	  cout<<a[i]<<" ";
+	}
+	cout<<endl;
+}
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ cat quickSortApp.cpp 
+#include"quickSort.h"
+int main()
+{
+	int *a,n,p,q;
+	cout<<"\nSorting using QUICK SORT\n";
+	cout<<"\nEnter the number of terms needed:";
+	cin>>n;
+	a=new int[n];
+	cout<<"\nNow enter the elements\n";
+	for(int i=1;i<=n;i++)
+	{
+	  cin>>a[i];
+	}
+	cout<<"\nElements before performing quick sort\n";
+	display(a,n);
+	cout<<"\nElements after performing quick sort\n";
+	p=1;q=n;
+	quickSort(a,p,q,n);
+	display(a,n);
+}
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ cat makefile 
+QUICKSORT.exe:quickSortApp.o quickSort.o
+	g++ -o QUICKSORT.exe quickSortApp.o quickSort.o
+quickSort.o:quickSort.cpp
+	g++ -c quickSort.cpp
+quickSortApp.o:quickSortApp.cpp
+	g++ -c quickSortApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ make
+make: 'QUICKSORT.exe' is up to date.
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ ./QUICKSORT.exe 
+
+Sorting using QUICK SORT
+
+Enter the number of terms needed:5
+
+Now enter the elements
+6
+3
+9
+1
+2
+
+Elements before performing quick sort
+6 3 9 1 2 
+
+Elements after performing quick sort
+1 2 3 6 9 
+mdumar@MdUmar: /mnt/d/Lab/sem4/DAA/ex3$ exit
+exit
+
+Script done on 2021-03-24 12:27:55+05:30

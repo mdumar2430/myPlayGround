@@ -1,0 +1,13 @@
+<br>
+<p>*directive*</p>
+<br>
+<div *ngIf="show">
+    <p>I am here!</p>
+</div>
+<input type="button" [(ngModel)]="bname" (click)=showHidetext()>
+<hr>
+<ul [ngClass]="show?'hello':'hot'">
+    <li *ngFor = "let movie of movielist">{{movie}}</li>
+</ul>
+
+<p [ngStyle]="{'font-size.px':size}">HII BRO</p>

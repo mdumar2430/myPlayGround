@@ -1,0 +1,399 @@
+Script started on 2021-02-23 12:11:48+05:30
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ cat graphHead.h 
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+class College
+{
+	public:
+		College(); // Default constructor
+		College(string,string,string,int,int,int); // Parameterized constructor
+		College(const College&);
+		~College(); // Destructor
+		void dispDetails(); // To display the details of the employees
+		int getCode();
+	private:
+		string name,city,acc;
+		int code,noOfStud,noOfFac;
+		friend class Graph;
+};
+class Graph
+{
+	public:
+		Graph(int);
+		~Graph();
+		void getData();
+		void createGraph();
+		void displayAll();
+		void performDFS();
+		void DFS(int);
+		void showVertexData(int);
+		void printAdjacent();
+		void implementConnectedComponent();
+	private:
+		College * vertices;
+		int noOfVertices;
+		bool *visited;
+		int **adjMatrix;
+};
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ cat graphImp.cpp 
+#include"graphHead.h"
+College::College()
+{
+ 	code=0;
+ 	noOfStud=0;
+ 	noOfFac=0;
+ 	name="";
+ 	city="";
+ 	acc="";
+}
+College::College(string name,string city,string acc,int noOfStud,int noOfFac,int code)
+{
+	this->name=name;
+	this->city=city;
+	this->acc=acc;
+	this->noOfFac=noOfFac;
+	this->noOfStud=noOfStud;
+	this->code=code;
+}
+College::~College()
+{
+}
+void College::dispDetails()
+{
+ 	cout<<name<<"\t"<<city<<"\t"<<acc<<"\t\t"<<noOfStud<<"\t\t"<<noOfFac<<"\t\t"<<code<<"\n";
+}
+int College::getCode()
+{
+	return code;
+}
+Graph::Graph(int n)
+{
+	noOfVertices = n;
+	vertices = new College[noOfVertices];
+	adjMatrix = new int*[noOfVertices];
+	for( int i=0; i<noOfVertices; i++ )
+		adjMatrix[i] = new int[noOfVertices];
+	for( int i=0;i<noOfVertices ; i++)
+		for( int j=0; j<noOfVertices ; j++)
+			adjMatrix[i][j] = 0;
+}
+Graph::~Graph()
+{
+}
+void Graph::getData()
+{
+	string name,city,acc;
+	int code,noOfStud,noOfFac;
+	cout<<"\n Enter College details : \n\n";
+	for(int i=0;i<noOfVertices;i++)
+	{
+		cout<<"Vertices " << i <<"\n";
+		cout<<"\n Enter the name of the College : ";
+		cin>>name;
+		cout<<"\nEnter city:";
+		cin>>city;
+		cout<<"\nEnter accreditation:";
+		cin>>acc;
+		cout<<"\nEnter no. of students:";
+		cin>>noOfStud;
+		cout<<"\nEnter no. of Faculty:";
+		cin>>noOfFac;
+		cout<<"\nEnter conselling code:";
+		cin>>code;
+		College C(name,city,acc,noOfStud,noOfFac,code);
+		vertices[i]= C;
+	}
+}
+void Graph::createGraph()
+{
+	int edge,v,w;
+	cout<<"\n Enter no of edges in the graph : ";
+	cin>>edge;
+	for(int i=0;i<edge;i++)
+	{
+		cout<<"\n Enter the adjacent vertices\n";
+		cout<<"\n Enter v : ";
+		cin>>v;
+		cout<<"\n Enter w : ";
+		cin>>w;
+		adjMatrix[v][w] =1;
+		adjMatrix[w][v] =1;
+	}
+}
+void Graph :: displayAll()
+{
+	cout<<"\nName\tCity\tAccreditation\tNo,of Students\tNo.of Faculty\tcode \n";
+	for(int i=0;i<noOfVertices;i++)
+	{
+		cout<<vertices[i].name<<" \t "<<vertices[i].city<<" \t"<<vertices[i].acc<<" \t\t "<<vertices[i].noOfStud<<"\t\t"<<vertices[i].noOfFac<<"\t\t"<<vertices[i].code<<"\n";
+	}
+}
+void Graph :: showVertexData(int i)
+{
+	cout<<"\n Vertice : "<<i<<"\n";
+	cout<<"\nName\tCity\tAccreditation\tNo,of Students\tNo.of Faculty\tcode \n";
+	cout<<vertices[i].name<<" \t "<<vertices[i].city<<" \t"<<vertices[i].acc<<" \t\t "<<vertices[i].noOfStud<<"\t\t"<<vertices[i].noOfFac<<"\t\t"<<vertices[i].code<<"\n";
+}
+void Graph::performDFS()
+{
+	visited = new bool[noOfVertices];
+	for( int i=0; i<noOfVertices; i++)
+		visited[i] = false;
+	for( int i=0; i<noOfVertices; i++)
+	{
+		if(!visited[i])
+			DFS(i);
+	}
+}
+void Graph::DFS(int i)
+{
+	showVertexData(i);
+	visited[i] = true;
+	for( int j=0; j<noOfVertices; j++)
+	{
+		if( adjMatrix[i][j] == 1)
+			if(!visited[j])
+				DFS(j);
+	}
+}
+void Graph::printAdjacent()
+{
+	for(int i=0;i<noOfVertices;i++)
+		cout<<"\t"<<i;
+	cout<<"\n";
+	for(int i=0; i<noOfVertices ; i++)
+		cout<<"________";
+	cout<<"\n";
+	for( int i=0;i<noOfVertices ; i++)
+	{
+		cout<<i<<" |\t";
+		for( int j=0; j<noOfVertices ; j++)
+			cout<<adjMatrix[i][j]<<"\t";
+		cout<<"\n";
+	}
+}
+void Graph::implementConnectedComponent()
+{
+	visited = new bool[noOfVertices];
+	for( int i=0; i<noOfVertices; i++)
+		visited[i] = false;
+	int count = 0;
+	for( int i=0; i<noOfVertices; i++)		
+	{
+		if(!visited[i])
+		{
+			cout<<"Connected Component "<<++count<<endl;
+			DFS(i);
+		}
+	}
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ cat graphApp.cpp 
+#include"graphHead.h"
+int main()
+{
+	int n,ch;
+	cout<<"\n Enter no of vertices : ";
+	cin>>n;
+	Graph g(n);
+	g.getData();
+	g.createGraph();
+	while(true)
+	{
+		cout<<"\n Enter 1 to perform DFS traversal.";
+		cout<<"\n Enter 2 to print adjacent matrix.";
+		cout<<"\n Enter 3 to find connected component.";
+		cout<<"\n Enter 4 to display all student details.";
+		cout<<"\n Enter 5 to exit.";
+		cout<<"\n Enter your choice : ";
+		cin>>ch;
+		switch(ch)
+		{
+			case 1:
+				{
+					cout<<"\n DFS traversal : \n";g.performDFS();
+					break;
+				}
+			case 2:
+				{
+					cout<<"\n Adjacent matrix : \n";
+					g.printAdjacent();
+					break;
+				}
+			case 3:
+				{
+					g.implementConnectedComponent();
+					break;
+				}
+			case 4:
+				{
+					g.displayAll();
+					break;
+				}
+			case 5:
+				exit(0);
+			default:
+				cout<<"\n Invalid choice.\n";
+		}
+	}
+}
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ cat makefile 
+out.exe:graphImp.o graphApp.o
+	g++ -o out.exe graphImp.o graphApp.o
+graphImp.o:graphImp.cpp
+	g++ -c graphImp.cpp
+graphApp.o:graphApp.cpp
+	g++ -c graphApp.cpp
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ ./out.exe 
+
+ Enter no of vertices : 3
+
+ Enter College details : 
+
+Vertices 0
+
+ Enter the name of the College : MSEC
+
+Enter city:vnr
+
+Enter accreditation:NBA
+
+Enter no. of students:12
+
+Enter no. of Faculty:23
+
+Enter conselling code:1234
+Vertices 1
+
+ Enter the name of the College : PSG
+
+Enter city:cbe
+
+Enter accreditation:NAAC
+
+Enter no. of students:23
+
+Enter no. of Faculty:34
+
+Enter conselling code:3456
+Vertices 2
+
+ Enter the name of the College : SAC
+
+Enter city:tvl
+
+Enter accreditation:NAAC
+
+Enter no. of students:78
+
+Enter no. of Faculty:89
+
+Enter conselling code:1670
+
+ Enter no of edges in the graph : 2
+
+ Enter the adjacent vertices
+
+ Enter v : 01
+
+ Enter w : 1
+
+ Enter the adjacent vertices
+
+ Enter v : 0
+
+ Enter w : 2
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 1
+
+ DFS traversal : 
+
+ Vertice : 0
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+MSEC 	 vnr 	NBA 		 12		23		1234
+
+ Vertice : 2
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+SAC 	 tvl 	NAAC 		 78		89		1670
+
+ Vertice : 1
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+PSG 	 cbe 	NAAC 		 23		34		3456
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 22
+
+ Invalid choice.
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 2
+
+ Adjacent matrix : 
+	0	1	2
+________________________
+0 |	0	0	1	
+1 |	0	1	0	
+2 |	1	0	0	
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 3
+Connected Component 1
+
+ Vertice : 0
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+MSEC 	 vnr 	NBA 		 12		23		1234
+
+ Vertice : 2
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+SAC 	 tvl 	NAAC 		 78		89		1670
+Connected Component 2
+
+ Vertice : 1
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+PSG 	 cbe 	NAAC 		 23		34		3456
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 4
+
+Name	City	Accreditation	No,of Students	No.of Faculty	code 
+MSEC 	 vnr 	NBA 		 12		23		1234
+PSG 	 cbe 	NAAC 		 23		34		3456
+SAC 	 tvl 	NAAC 		 78		89		1670
+
+ Enter 1 to perform DFS traversal.
+ Enter 2 to print adjacent matrix.
+ Enter 3 to find connected component.
+ Enter 4 to display all student details.
+ Enter 5 to exit.
+ Enter your choice : 5
+mdumar@MdUmar: /mnt/d/Lab/sem3/dataStruct/ex10$ exit
+exit
+
+Script done on 2021-02-23 12:15:02+05:30 

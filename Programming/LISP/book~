@@ -1,0 +1,2 @@
+(setq(books list("Harry Potter" "Hello" "men in black"))
+(write(books))

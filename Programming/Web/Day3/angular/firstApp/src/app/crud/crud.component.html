@@ -1,0 +1,32 @@
+<table title="Movies" border="1">
+    <tr>
+        <th>S.no</th>
+        <th>Name</th>
+        <th>Director</th>
+    </tr>
+    <tr *ngFor ="let movie of movieList;let i=index">
+        <td>{{i}}</td>
+        <td>{{movie.title}}</td>
+        <td>{{movie.Dir}}</td>
+        <td><input type="button" value="View" (click)=view(i) ></td>
+        <td><input type="button" value="Delete" (click)=delete(i) ></td>
+        <td><input type="button" value="Update" (click)=update(i) ></td>
+    </tr>
+    
+</table>
+<br>
+<hr>
+<div *ngIf="viewFlag">
+    <h3>Movie name:{{clickedMovie.title}}<br>
+        Hero:{{clickedMovie.hero}}<br>
+        Director:{{clickedMovie.Dir}}<br>
+    </h3>
+</div>
+<div *ngIf="deleteFlag">
+    <h3>{{clickedMovie.title}} is deleted!</h3>
+</div>
+<div *ngIf="updateFlag">
+    <h3>Update {{clickedMovie.title}}'s hero name!</h3>
+    Enter new name:<input type="text" [(ngModel)]="clickedMovie.hero">
+    <h2>Updation Sucessful!</h2>
+</div>

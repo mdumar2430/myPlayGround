@@ -1,0 +1,18 @@
+<br>
+<hr>
+<h1>Calculator</h1>
+Enter Number1:<input type="number" [(ngModel)]="num1"><br>
+Enter Number2:<input type="number" [(ngModel)]="num2"><br>
+<br>
+<label for="op">Choose a Operation:</label>
+
+<select [(ngModel)]="opr" (click)="compute()">
+  <option value="Add">+</option>
+  <option value="Sub">-</option>
+  <option value="Mul">*</option>
+  <option value="Div">/</option>
+</select>
+<br>
+<input type="button" value="Compute" (click)=compute()>
+<br>
+Answer:<input type="text" value ="{{num1}}{{symbol}}{{num2}}={{ans}}">
